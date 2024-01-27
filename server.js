@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import router from "./routes/user-routes.js";
 import dotenv from "dotenv";
+import blogRouter from "./routes/blog-routes.js";
 
 dotenv.config();
 
@@ -12,6 +13,8 @@ app.use(express.json());
 
 //importing the routes
 app.use("/api/user", router);
+app.use("/api/blog", blogRouter);
+
 
 const dbConnectionString = process.env.DB_CONNECTION_STRING;
 mongoose.connect(dbConnectionString,
