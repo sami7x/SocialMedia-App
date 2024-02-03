@@ -85,12 +85,15 @@ export const login = async(req,res,next)=>{
         .json({message: "User does not exists."});
     }
 
+    
     const isPasswordCorrect = bcrypt.compareSync(password, existingUser.password);
     if(!isPasswordCorrect)
     {
         return res.status(400).json({message: "Password is incorrect" });
     }
-    return res.status(200).json({message: "Login Successful"});
+    //If email and paswword are correct, generate token
+    const token = jwt.sign({userId : existingUser._id}, 'secretkey', {expiresIn: '1h'});
+    return res.status(200).json({message: "Login Successful", token: token});
 
 
 };
@@ -100,7 +103,7 @@ export const login = async(req,res,next)=>{
  */
 export const currentUser = async(req,res,next)=>{
     res.json(req.user);
-}
+};
 
 
 /**
