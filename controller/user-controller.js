@@ -1,6 +1,7 @@
 import User from "../model/User.js";
 import bcrypt from "bcryptjs";
-
+import jwt from "jsonwebtoken";
+import BlacklistToken from "../model/blacklistToken.js";
 
 //fetch User
 export const getAllUser = async(req,res, next) => 
@@ -41,6 +42,7 @@ export const signup = async(req,res)=>{
         .json({message: "User Already exists login instead."});
     }
 
+    //hash password
     const hashedPassword = bcrypt.hashSync(password);
 
     //Query for saving data into DB
@@ -91,4 +93,35 @@ export const login = async(req,res,next)=>{
     return res.status(200).json({message: "Login Successful"});
 
 
+};
+
+/**
+ * Display Current Logged in User
+ */
+export const currentUser = async(req,res,next)=>{
+    res.json(req.user);
+}
+
+
+/**
+ * Logout User
+ */
+export const logout = async(req, res, next)=>
+{
+    const token = req.headers.authorization?.split(" "[1]);
+    if(!token)
+    {
+       return  res.status(400).json({message: "Token not provided"});
+    }
+    try{
+        await BlacklistToken.create({token});
+        return res.status(500).json({message: "Logout Successfully"});
+
+
+    }
+    catch(error)
+    {
+        console.log(error);
+        return res.json({message:"Failed User Logout"});
+    }
 };
