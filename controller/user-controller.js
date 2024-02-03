@@ -92,7 +92,7 @@ export const login = async(req,res,next)=>{
         return res.status(400).json({message: "Password is incorrect" });
     }
     //If email and paswword are correct, generate token
-    const token = jwt.sign({userId : existingUser._id}, 'secretkey', {expiresIn: '1h'});
+    const token = jwt.sign({userId : existingUser._id}, process.env.ACCESS_TOKEN_SECRET , {expiresIn: '1h'});
     return res.status(200).json({message: "Login Successful", token: token});
 
 
@@ -101,7 +101,7 @@ export const login = async(req,res,next)=>{
 /**
  * Display Current Logged in User
  */
-export const currentUser = async(req,res,next)=>{
+export const currentUser = async(req,res)=>{
     res.json(req.user);
 };
 
